@@ -3,20 +3,12 @@ sudo: required
 services:
   - docker
 
-script:
+before_install:
   - docker build -t wafeekolatunji/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true wafeekolatunji/react-test npm run test
-
-script:
-  - bash ./docker-login.sh
-
-script:
-  - bash ./docker-build.sh
-
-script:
   - bash ./docker-push.sh
+
 
 # deploy:
 #   provider: elasticbeanstalk
