@@ -11,7 +11,8 @@ script:
 
 after_success:
   # Login to docker
-  script: bash docker_push.sh
+  provider: script
+  script: bash docker_push
 
 # deploy:
 #   provider: elasticbeanstalk
