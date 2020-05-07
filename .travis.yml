@@ -9,10 +9,10 @@ before_install:
 script:
   - docker run -e CI=true wafeekolatunji/react-test npm run test
 
-after_success:
+after_script:
   # Login to docker
-  provider: script
-  script: bash docker_push
+  # provider: script
+  script: ./docker_push.sh
 
 # deploy:
 #   provider: elasticbeanstalk
