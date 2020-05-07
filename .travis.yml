@@ -8,7 +8,10 @@ before_install:
 
 script:
   - docker run -e CI=true wafeekolatunji/react-test npm run test
-
+script:
+  - bash ./docker-login.sh
+script:
+  - bash ./docker-build.sh
 script:
   - bash ./docker-push.sh
 
