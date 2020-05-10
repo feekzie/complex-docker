@@ -7,17 +7,30 @@ before_install:
   - docker build -t wafeekolatunji/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - bash ./docker-push.sh
+  - docker run -e CI=true wafeekolatunji/react-test npm run test
 
+after_success:
+  - docker build -t wafeekolatunji/multi-client ./client
+  - docker build -t wafeekolatunji/multi-nginx ./nginx
+  - docker build -t wafeekolatunji/multi-server ./server
+  - docker build -t wafeekolatunji/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push wafeekolatunji/multi-client
+  - docker push wafeekolatunji/multi-nginx
+  - docker push wafeekolatunji/multi-server
+  - docker push wafeekolatunji/multi-worker
 
-# deploy:
-#   provider: elasticbeanstalk
-#   region: "us-east-2"
-#   app: "docker-react"
-#   env: "DockerReact-env"
-#   bucket_name: "elasticbeanstalk-us-east-2-090343325122"
-#   bucket_path: "docker-react"
-#   on:
-#     branch: master
-#   access_key_id: $AWS_ACCESS_KEY
-#   secret_access_key: $AWS_SECRET_KEY
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-2-090343325122"
+  bucket_path: "docker-multi"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
